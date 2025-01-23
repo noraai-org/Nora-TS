@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { EventEmitter } from 'events';
 import { WebSocketOptions } from '../types';
 
-const API_URL = 'http://localhost:3000'
+const API_URL = 'https://api.nora.systems'
 
 export class CryptoWebSocketClient extends EventEmitter {
     private socket: Socket | null = null;
