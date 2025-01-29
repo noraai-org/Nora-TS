@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { EventEmitter } from 'events';
 import { WebSocketOptions } from '../types';
 
-const API_URL = 'https://api.nora.systems'
+const API_URL = 'http://localhost:3000'
 
 export class CryptoWebSocketClient extends EventEmitter {
     private socket: Socket | null = null;
@@ -118,6 +118,15 @@ export class CryptoWebSocketClient extends EventEmitter {
         }
     }
 
+    public getOwnedTokens(): void {
+        if (this.socket) {
+            console.log('Requesting owned tokens');
+            this.socket.emit('message', JSON.stringify({
+                event: 'getOwnedTokens'
+            }));
+        }
+    }
+
     private setupEventHandlers(): void {
         if (!this.socket) return;
 
@@ -177,6 +186,14 @@ export class CryptoWebSocketClient extends EventEmitter {
         this.socket.on('transaction', (data) => {
             try {
                 this.emit('transaction', JSON.parse(data));
+            } catch (error) {
+                this.emit('error', error);
+            }
+        });
+
+        this.socket.on('ownedTokens', (data) => {
+            try {
+                this.emit('ownedTokens', JSON.parse(data));
             } catch (error) {
                 this.emit('error', error);
             }
